@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { StatusBar } from 'expo-status-bar';
-import { Button, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { Button, Header, Icon, Input, ListItem } from '@rneui/themed';
 import * as SQLite from 'expo-sqlite';
 
 export default function App() {
@@ -41,34 +42,45 @@ export default function App() {
 	const keyExtractor = i => i.id.toString ( );
 
 	const renderItem = ( { item } ) => {
-		return <View style={ { flexDirection: 'row' } }>
-			<Text style={ { marginRight: '5%' } }>{item.product}, {item.amount}</Text>
-			<Text style={ { color: 'red' } } onPress= { ( ) => onDelete ( item.id ) }>Bought</Text>
-		</View>
+		return <ListItem bottomDivider>
+			<ListItem.Content>
+				<ListItem.Title>{ item.product }</ListItem.Title>
+				<ListItem.Subtitle style={ { color: '#C8C8C8' } }>{ item.amount }</ListItem.Subtitle>
+			</ListItem.Content>
+			<ListItem.Content right>
+				<Button raised color='error' type='clear' onPress={ ( ) => onDelete ( item.id ) } icon={ { name: 'delete', color: 'red' } }/>
+			</ListItem.Content>
+		</ListItem>
 	};
 
 	return (
 		<View style={styles.container}>
-			<TextInput 
-				style={ { borderColor: 'black', borderWidth: 2, width: '50%', marginTop: '25%' } }
+			<Header
+				centerComponent={ { text: 'Shopping List', style: { color: 'white' } } }
+			/>
+			<Input 
+				style={ { width: '50%', marginTop: 'auto' } }
+				label='Product'
 				placeholder='Product'
 				onChangeText={ text => setProduct ( text ) }
 				value={ product }
 			/>
 
-			<TextInput 
-				style={ { borderColor: 'black', borderWidth: 2, width: '50%', marginTop: '5%' } }
+			<Input 
+				style={ { width: '50%', marginTop: 'auto' } }
+				label='Amount'
 				placeholder='Amount'
 				onChangeText={ text => setAmount ( text ) }
 				value={ amount }
 			/>
 
-			<Button title='Save' onPress= { ( ) => onAdd ( ) }/>
-
+			<Button title='Save' onPress= { ( ) => onAdd ( ) } raised icon={ { name: 'save' } }/>
+			
 			<FlatList
 				keyExtractor={ keyExtractor }
 				renderItem={ renderItem }
 				data={ present }
+				style={ { marginTop: '5%' } }
 			/>
 
 			<StatusBar style="auto" />
@@ -79,8 +91,6 @@ export default function App() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center',
+		backgroundColor: '#fff'
 	},
 });
